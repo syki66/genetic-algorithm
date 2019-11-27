@@ -117,22 +117,20 @@ def isCollision(t1, t2):
     distance = math.sqrt(math.pow(t1.xcor()-t2.xcor(),2)+math.pow(t1.ycor()-t2.ycor(),2))
     
     if distance < 30:
-        global count
-        count = count + 1
-        t1.clear()
-        t1.write(str(count))
-        t1.setposition(70,70)
-        t1.write(str(count),font=("Arial", 30, "normal"))
-        return True
+        text_succ = turtle.Turtle()
+        text_succ.hideturtle()
+        text_succ.clear()
+        text_succ.penup()
+        text_succ.setposition(-40, 100)
+        text_succ.write("성공",font=("Arial", 30, "normal"))
 
 
-
-#텍스트출력
-t1 = turtle.Turtle()
-t1.penup()
-t1.setposition(100,300)
-t1.hideturtle()
-t1.write("Score = ", False, font=("Arial", 30, "normal"))
+#텍스트
+text_gen1 = turtle.Turtle()
+text_gen1.penup()
+text_gen1.setposition(-100,-170)
+text_gen1.hideturtle()
+text_gen1.write("Generation ", False, font=("Arial", 20, "normal"))
 
 
 
@@ -140,73 +138,107 @@ t1.write("Score = ", False, font=("Arial", 30, "normal"))
 # 유전 알고리즘 해볼까
 
 
-# 램덤으로 초기 유전값 생성 16인자씩 총 10개
-
-ten_gen_list = []
-for i in range(10):
-    gen_list = []
-    for j in range(16):
-        gen_list.append(randint(1,4))
-        
-    ten_gen_list.append(gen_list)
+# 램덤으로 초기 유전값 생성 20인자씩 총 10개 도착하는데 가로세로 8칸이 최단거리
 
 
+def create_random_DNA(dna_info_count, cnt):
+    ten_gen_list = []
+    for i in range(cnt):
+        gen_list = []
+        for j in range(dna_info_count):
+            gen_list.append(randint(1,4))
+            
+        ten_gen_list.append(gen_list)
 
-
+    return ten_gen_list
 
 
 # 랜덤인자들 실행후 최종값들 거리측정
-gen_distance = []
-for i in range(len(ten_gen_list)):
-    for j in range(16):
-        gen_execute(ten_gen_list[i], j)
 
-    distance = math.sqrt(math.pow(p1.xcor()-f1.xcor(),2)+math.pow(p1.ycor()-f1.ycor(),2))
-    gen_distance.append(distance)
-    p1.setposition(-70, -70)
+def execute_measure_distance_of_DNA(ten_lists):
+    gen_distance = []
+    for i in range(len(ten_lists)):
+        for j in range(20):
+            gen_execute(ten_lists[i], j)
 
+        distance = math.sqrt(math.pow(p1.xcor()-f1.xcor(),2)+math.pow(p1.ycor()-f1.ycor(),2))
+        gen_distance.append(distance)
+        p1.setposition(-70, -70)
 
-
-
+    return gen_distance
 
 
 
 
 # 목적지와 가장 가까운값 두개 추출
-selected_gen_list = []
 
-selected_gen_list.append( ten_gen_list[gen_distance.index(min(gen_distance))] )  #가장 거리 가까운 인덱스값 리스트
+def select_DNA(ten_lists2, gen_distance2):
+    selected_gen_list = []
 
-gen_distance[gen_distance.index(min(gen_distance))] = 1000
+    selected_gen_list.append( ten_lists2[gen_distance2.index(min(gen_distance2))] )  #가장 거리 가까운 인덱스값 리스트
 
-selected_gen_list.append( ten_gen_list[gen_distance.index(min(gen_distance))] )  #두번째로 거리 가까운 인덱스값 리스트
+    gen_distance2[gen_distance2.index(min(gen_distance2))] = 1000
+
+    selected_gen_list.append( ten_lists2[gen_distance2.index(min(gen_distance2))] )  #두번째로 거리 가까운 인덱스값 리스트
+
+    print(selected_gen_list[0])
+    print(selected_gen_list[1])
+
+    return selected_gen_list
 
 
-print(selected_gen_list)
+
+
+# 두 값을 받아오고 랜덤 교차를 이용하여 다음세대 10마리 생산
+
+
+def generate_next_gen(selected_gen_list2):
+    second_ten_gen_list = []
+
+    for i in range(10):
+        mixed_gen = []
+        
+        for j in range(20):
+            mixed_gen.append(selected_gen_list2[randint(0,1)][j])
+
+        second_ten_gen_list.append(mixed_gen)
+
+    return second_ten_gen_list
 
 
 
 
 
 
-# 두 값을 이용해서 다음세대 10마리 생산
 
-second_ten_gen_list = []
 
-for i in range(10):
-    mixed_gen = []
+
+TEST1 = create_random_DNA(20, 10)
+
+generation = 0
+
+text_gen2 = turtle.Turtle()
+text_gen2.hideturtle()
+
+for i in range(5):
+    generation += 1
+
+
+    text_gen2.clear()
+    text_gen2.penup()
+    text_gen2.setposition(60, -170)
+    text_gen2.write(str(generation),font=("Arial", 20, "normal"))
     
-    for j in range(16):
-        mixed_gen.append(selected_gen_list[randint(0,1)][j])
-
-    second_ten_gen_list.append(mixed_gen)
-
-for i in range(i):
-    print(second_ten_gen_list[i])
+    TEST2 = execute_measure_distance_of_DNA(TEST1)
+    
+    TEST3 = select_DNA(TEST1, TEST2)
+    
+    TEST1 = generate_next_gen(TEST3)
 
 
 
 
+#### 돌연변이 추가해야 값도 여러개로 늘리기 받아오기.. 개수좀 늘리자
 
 
 
