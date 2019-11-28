@@ -138,28 +138,32 @@ text_gen1.write("Generation ", False, font=("Arial", 20, "normal"))
 # 유전 알고리즘 해볼까
 
 
-# 램덤으로 초기 유전값 생성 20인자씩 총 10개 도착하는데 가로세로 8칸이 최단거리
+# 램덤으로 초기 유전값 생성 20인자씩 총 100개 도착하는데 가로세로 8칸이 최단거리
 
 
+#(dna인자 개수, 개체 개수)
 def create_random_DNA(dna_info_count, cnt):
-    ten_gen_list = []
+    cnt_gen_list = []
     for i in range(cnt):
         gen_list = []
         for j in range(dna_info_count):
             gen_list.append(randint(1,4))
             
-        ten_gen_list.append(gen_list)
+        cnt_gen_list.append(gen_list)
 
-    return ten_gen_list
+    return cnt_gen_list
 
 
 # 랜덤인자들 실행후 최종값들 거리측정
 
-def execute_measure_distance_of_DNA(ten_lists):
+def execute_measure_distance_of_DNA(cnt_lists):
     gen_distance = []
-    for i in range(len(ten_lists)):
+    count = 0
+    for i in range(len(cnt_lists)):
+        count += 1
+        print(count)
         for j in range(20):
-            gen_execute(ten_lists[i], j)
+            gen_execute(cnt_lists[i], j)
 
         distance = math.sqrt(math.pow(p1.xcor()-f1.xcor(),2)+math.pow(p1.ycor()-f1.ycor(),2))
         gen_distance.append(distance)
@@ -170,19 +174,22 @@ def execute_measure_distance_of_DNA(ten_lists):
 
 
 
-# 목적지와 가장 가까운값 두개 추출
+# 목적지와 가장 가까운값 5개 추출
 
-def select_DNA(ten_lists2, gen_distance2):
+def select_DNA(cnt_lists2, gen_distance2):
     selected_gen_list = []
 
-    selected_gen_list.append( ten_lists2[gen_distance2.index(min(gen_distance2))] )  #가장 거리 가까운 인덱스값 리스트
+    #가장 거리 가까운 인덱스값 리스트 5개
+    for i in range(5):
+        selected_gen_list.append( cnt_lists2[gen_distance2.index(min(gen_distance2))] )  
 
-    gen_distance2[gen_distance2.index(min(gen_distance2))] = 1000
+        gen_distance2[gen_distance2.index(min(gen_distance2))] = 1000
 
-    selected_gen_list.append( ten_lists2[gen_distance2.index(min(gen_distance2))] )  #두번째로 거리 가까운 인덱스값 리스트
 
-    print(selected_gen_list[0])
-    print(selected_gen_list[1])
+    for i in range(5):
+        print(selected_gen_list[i])
+
+    print("----------------------------------------")
 
     return selected_gen_list
 
@@ -193,19 +200,17 @@ def select_DNA(ten_lists2, gen_distance2):
 
 
 def generate_next_gen(selected_gen_list2):
-    second_ten_gen_list = []
+    second_100_gen_list = []
 
-    for i in range(10):
+    for i in range(100):
         mixed_gen = []
         
         for j in range(20):
-            mixed_gen.append(selected_gen_list2[randint(0,1)][j])
+            mixed_gen.append(selected_gen_list2[randint(0,4)][j])
 
-        second_ten_gen_list.append(mixed_gen)
+        second_100_gen_list.append(mixed_gen)
 
-    return second_ten_gen_list
-
-
+    return second_100_gen_list
 
 
 
@@ -213,7 +218,9 @@ def generate_next_gen(selected_gen_list2):
 
 
 
-TEST1 = create_random_DNA(20, 10)
+
+
+TEST1 = create_random_DNA(20, 100)
 
 generation = 0
 
