@@ -15,13 +15,13 @@ border_pen = turtle.Turtle()
 border_pen.speed(0)
 border_pen.color("white")
 border_pen.penup()
-border_pen.setposition(-100,-100)
+border_pen.setposition(-200,-200)
 border_pen.pendown()
 border_pen.pensize(3)
 border_pen.hideturtle()
 
 for side in range(4):
-    border_pen.fd(200)
+    border_pen.fd(400)
     border_pen.lt(90)
 
 
@@ -32,9 +32,9 @@ p1.shape("turtle")
 p1.penup()
 p1.speed(0)
 p1.setheading(90)
-p1.setposition(-70, -70)
+p1.setposition(-170, -170)
 p1.shapesize(3, 3)
-p1speed = 15
+p1speed = 15 #거북이 한번에 이동거리 얼마로할지 조절
 
 #먹이
 f1 = turtle.Turtle()
@@ -44,15 +44,16 @@ f1.penup()
 f1.speed(0)
 f1.setheading(90)
 f1.shapesize(1,1)
-f1.setposition(70,70)
+f1.setposition(170,170)
+#f1.setposition(0,0)
 
 #키조작
 def move_left():
     p1.setheading(180)
     x = p1.xcor()
     x -= p1speed
-    if x < -100:
-        x = -100
+    if x < -200:
+        x = -200
     p1.setx(x)
     if isCollision(f1,p1):
         print("목표달성")
@@ -61,8 +62,8 @@ def move_right():
     p1.setheading(0)
     x = p1.xcor()
     x += p1speed
-    if x > 100:
-        x = 100
+    if x > 200:
+        x = 200
     p1.setx(x)
     if isCollision(f1,p1):
         print("목표달성")
@@ -71,8 +72,8 @@ def move_down():
     p1.setheading(270)
     y = p1.ycor()
     y -= p1speed
-    if y < -100:
-        y = -100
+    if y < -200:
+        y = -200
     p1.sety(y)
     if isCollision(f1,p1):
         print("목표달성")
@@ -81,8 +82,8 @@ def move_up():
     p1.setheading(90)
     y = p1.ycor()
     y += p1speed
-    if y > 100:
-        y = 100
+    if y > 200:
+        y = 200
     p1.sety(y)
     if isCollision(f1,p1):
         print("목표달성")
@@ -99,12 +100,13 @@ def gen_execute(generationList, i):
     else:
         move_down()
 
-
+'''
 turtle.listen()
 turtle.onkey(move_left, "Left")
 turtle.onkey(move_right, "Right")
 turtle.onkey(move_up, "Up")
 turtle.onkey(move_down, "Down")
+'''
 
 #거리만
 def Distance(t1,t2):
@@ -121,16 +123,30 @@ def isCollision(t1, t2):
         text_succ.hideturtle()
         text_succ.clear()
         text_succ.penup()
-        text_succ.setposition(-40, 100)
+        text_succ.setposition(-40, 200)
         text_succ.write("성공",font=("Arial", 30, "normal"))
 
 
 #텍스트
 text_gen1 = turtle.Turtle()
 text_gen1.penup()
-text_gen1.setposition(-100,-170)
+text_gen1.setposition(-100,-240)
 text_gen1.hideturtle()
 text_gen1.write("Generation ", False, font=("Arial", 20, "normal"))
+
+
+text_try = turtle.Turtle()
+text_try.penup()
+text_try.setposition(220,30)
+text_try.hideturtle()
+text_try.write("Try", False, font=("Arial", 20, "normal"))
+
+
+text_try_count = turtle.Turtle()
+text_try_count.penup()
+text_try_count.setposition(230,-10)
+text_try_count.hideturtle()
+
 
 
 
@@ -157,36 +173,38 @@ def create_random_DNA(dna_info_count, cnt):
 # 랜덤인자들 실행후 최종값들 거리측정
 
 def execute_measure_distance_of_DNA(cnt_lists):
+
     gen_distance = []
     count = 0
     for i in range(len(cnt_lists)):
+        text_try_count.clear()
         count += 1
-        print(count)
-        for j in range(20):
+        text_try_count.write(str(count), False, font=("Arial", 20, "normal"))
+        for j in range(len(cnt_lists[0])):
             gen_execute(cnt_lists[i], j)
 
         distance = math.sqrt(math.pow(p1.xcor()-f1.xcor(),2)+math.pow(p1.ycor()-f1.ycor(),2))
         gen_distance.append(distance)
-        p1.setposition(-70, -70)
+        p1.setposition(-170, -170)
 
     return gen_distance
 
 
 
 
-# 목적지와 가장 가까운값 5개 추출
+# 목적지와 가장 가까운값 10개 추출 (상위 10퍼)
 
 def select_DNA(cnt_lists2, gen_distance2):
     selected_gen_list = []
 
     #가장 거리 가까운 인덱스값 리스트 5개
-    for i in range(5):
+    for i in range(10):
         selected_gen_list.append( cnt_lists2[gen_distance2.index(min(gen_distance2))] )  
 
-        gen_distance2[gen_distance2.index(min(gen_distance2))] = 1000
+        gen_distance2[gen_distance2.index(min(gen_distance2))] = 10000
 
 
-    for i in range(5):
+    for i in range(10):
         print(selected_gen_list[i])
 
     print("----------------------------------------")
@@ -196,7 +214,7 @@ def select_DNA(cnt_lists2, gen_distance2):
 
 
 
-# 두 값을 받아오고 랜덤 교차를 이용하여 다음세대 10마리 생산
+# 두 값을 받아오고 랜덤 교차를 이용하여 다음세대 100마리 생산
 
 
 def generate_next_gen(selected_gen_list2):
@@ -205,8 +223,8 @@ def generate_next_gen(selected_gen_list2):
     for i in range(100):
         mixed_gen = []
         
-        for j in range(20):
-            mixed_gen.append(selected_gen_list2[randint(0,4)][j])
+        for j in range(len(selected_gen_list2[0])):
+            mixed_gen.append(selected_gen_list2[randint(0,3)][j])
 
         second_100_gen_list.append(mixed_gen)
 
@@ -220,7 +238,7 @@ def generate_next_gen(selected_gen_list2):
 
 
 
-TEST1 = create_random_DNA(20, 100)
+TEST1 = create_random_DNA(45, 100)
 
 generation = 0
 
@@ -233,7 +251,7 @@ for i in range(5):
 
     text_gen2.clear()
     text_gen2.penup()
-    text_gen2.setposition(60, -170)
+    text_gen2.setposition(60, -240)
     text_gen2.write(str(generation),font=("Arial", 20, "normal"))
     
     TEST2 = execute_measure_distance_of_DNA(TEST1)
@@ -245,9 +263,9 @@ for i in range(5):
 
 
 
-#### 돌연변이 추가해야 값도 여러개로 늘리기 받아오기.. 개수좀 늘리자
+#### 돌연변이 추가해야되고 각세대 성공률 기입, 최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
 
-
+#장애물 추가하기
 
 
 
