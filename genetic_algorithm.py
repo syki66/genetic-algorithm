@@ -8,10 +8,10 @@ import time
 
 #배경
 wn = turtle.Screen()
-wn.bgcolor("gray")
+wn.bgcolor("yellow")
 wn.title("Gen turtle")
 wn.setup(550,500)
-wn.delay(0.05) # 가속
+wn.delay(0.0001) # 가속
 
 #경계선
 border_pen = turtle.Turtle()
@@ -175,7 +175,7 @@ text_try_count.hideturtle()
 # 유전 알고리즘 해볼까
 
 
-# 램덤으로 초기 유전값 생성 20인자씩 총 100개 도착하는데 가로세로 8칸이 최단거리
+# 램덤으로 초기 유전값 생성 20인자씩 총 100개 도착하는데 43칸이 최단거리
 
 
 #(dna인자 개수, 개체 개수)
@@ -259,14 +259,14 @@ def generate_next_gen(selected_gen_list2):
 #돌연변이 위치 상관없이 1퍼센트(450개 중에 10개) 인자 랜덤으로 대입
 def mutate_DNA(second_100_gen_list2, mutation_ratio):
     for i in range(mutation_ratio):
-        second_100_gen_list2[randint(0,99)][randint(0,44)] = randint(1,4)
+        second_100_gen_list2[randint(0,99)][randint(0,42)] = randint(1,4)
 
     return second_100_gen_list2
 
 
 
 
-TEST1 = create_random_DNA(45, 100)
+TEST1 = create_random_DNA(43, 100)
 
 generation = 0
 
@@ -275,9 +275,10 @@ text_gen2.hideturtle()
 
 for i in range(20):
     generation += 1
-
-
-    #text_try_count
+    '''
+    if generation == 15 :
+        wn.delay(50)
+    '''
     generation_sucess_cnt = 0
 
     text_gen2.clear()
@@ -294,7 +295,6 @@ for i in range(20):
     TEST1 = mutate_DNA(TEST4, 10)
 
     
-    time.sleep(1)
 
 
 #### 돌연변이 추가해야되고 각세대 성공률 기입, 최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
@@ -302,10 +302,7 @@ for i in range(20):
 #장애물 추가하기
 
 
-# 성공률 기입 하다말음
-
-
-
+#1.3.1은 타이트하게 43개 유전인자로 가능한지 확인할라고ㅇㅇ 그냥 손쉽게가능함
 
 
 
