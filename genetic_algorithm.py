@@ -4,11 +4,14 @@ from random import randint
 import math
 import time
 
+#창크기
 
 #배경
 wn = turtle.Screen()
-wn.bgcolor("yellow")
+wn.bgcolor("gray")
 wn.title("Gen turtle")
+wn.setup(550,500)
+wn.delay(0.05) # 가속
 
 #경계선
 border_pen = turtle.Turtle()
@@ -55,8 +58,7 @@ def move_left():
     if x < -200:
         x = -200
     p1.setx(x)
-    if isCollision(f1,p1):
-        print("목표달성")
+    isCollision(f1,p1)
 
 def move_right():
     p1.setheading(0)
@@ -65,8 +67,7 @@ def move_right():
     if x > 200:
         x = 200
     p1.setx(x)
-    if isCollision(f1,p1):
-        print("목표달성")
+    isCollision(f1,p1)
 
 def move_down():
     p1.setheading(270)
@@ -75,8 +76,7 @@ def move_down():
     if y < -200:
         y = -200
     p1.sety(y)
-    if isCollision(f1,p1):
-        print("목표달성")
+    isCollision(f1,p1)
         
 def move_up():
     p1.setheading(90)
@@ -85,8 +85,7 @@ def move_up():
     if y > 200:
         y = 200
     p1.sety(y)
-    if isCollision(f1,p1):
-        print("목표달성")
+    isCollision(f1,p1)
 
 
 #유전자 리스트 실행함수
@@ -114,17 +113,33 @@ def Distance(t1,t2):
     return distance
 
 #충돌
-count = 0
+
+generation_sucess_cnt = 0
+
+text_succ = turtle.Turtle()
+text_succ.hideturtle()
+text_succ.penup()
+text_succ.setposition(30, 200)
+text_succ.write(str(generation_sucess_cnt),font=("Arial", 30, "normal"))
+
+try_cnt = 0
+is_count = 0
 def isCollision(t1, t2):
+    global try_cnt
+    global is_count
+    global generation_sucess_cnt
     distance = math.sqrt(math.pow(t1.xcor()-t2.xcor(),2)+math.pow(t1.ycor()-t2.ycor(),2))
+
     
-    if distance < 30:
-        text_succ = turtle.Turtle()
-        text_succ.hideturtle()
+    if ( (distance < 30) and (is_count != try_cnt) ):
+        is_count = try_cnt #성공률 중복카운팅 방지
+
+        generation_sucess_cnt += 1
+              
         text_succ.clear()
         text_succ.penup()
-        text_succ.setposition(-40, 200)
-        text_succ.write("성공",font=("Arial", 30, "normal"))
+        text_succ.setposition(30, 200)
+        text_succ.write(str(generation_sucess_cnt)+"%",font=("Arial", 30, "normal"))
 
 
 #텍스트
@@ -133,6 +148,12 @@ text_gen1.penup()
 text_gen1.setposition(-100,-240)
 text_gen1.hideturtle()
 text_gen1.write("Generation ", False, font=("Arial", 20, "normal"))
+
+text_suc = turtle.Turtle()
+text_suc.penup()
+text_suc.setposition(-100,205)
+text_suc.hideturtle()
+text_suc.write("성공률 = ", False, font=("Arial", 20, "normal"))
 
 
 text_try = turtle.Turtle()
@@ -173,13 +194,15 @@ def create_random_DNA(dna_info_count, cnt):
 # 랜덤인자들 실행후 최종값들 거리측정
 
 def execute_measure_distance_of_DNA(cnt_lists):
-
+    global try_cnt
+    try_cnt = 0
+    
     gen_distance = []
-    count = 0
+
     for i in range(len(cnt_lists)):
         text_try_count.clear()
-        count += 1
-        text_try_count.write(str(count), False, font=("Arial", 20, "normal"))
+        try_cnt += 1
+        text_try_count.write(str(try_cnt), False, font=("Arial", 20, "normal"))
         for j in range(len(cnt_lists[0])):
             gen_execute(cnt_lists[i], j)
 
@@ -197,7 +220,7 @@ def execute_measure_distance_of_DNA(cnt_lists):
 def select_DNA(cnt_lists2, gen_distance2):
     selected_gen_list = []
 
-    #가장 거리 가까운 인덱스값 리스트 5개
+    #가장 거리 가까운 인덱스값 리스트 10개
     for i in range(10):
         selected_gen_list.append( cnt_lists2[gen_distance2.index(min(gen_distance2))] )  
 
@@ -233,7 +256,12 @@ def generate_next_gen(selected_gen_list2):
 
 
 
+#돌연변이 위치 상관없이 1퍼센트(450개 중에 10개) 인자 랜덤으로 대입
+def mutate_DNA(second_100_gen_list2, mutation_ratio):
+    for i in range(mutation_ratio):
+        second_100_gen_list2[randint(0,99)][randint(0,44)] = randint(1,4)
 
+    return second_100_gen_list2
 
 
 
@@ -245,9 +273,12 @@ generation = 0
 text_gen2 = turtle.Turtle()
 text_gen2.hideturtle()
 
-for i in range(5):
+for i in range(20):
     generation += 1
 
+
+    #text_try_count
+    generation_sucess_cnt = 0
 
     text_gen2.clear()
     text_gen2.penup()
@@ -258,9 +289,12 @@ for i in range(5):
     
     TEST3 = select_DNA(TEST1, TEST2)
     
-    TEST1 = generate_next_gen(TEST3)
+    TEST4 = generate_next_gen(TEST3)
 
+    TEST1 = mutate_DNA(TEST4, 10)
 
+    
+    time.sleep(1)
 
 
 #### 돌연변이 추가해야되고 각세대 성공률 기입, 최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
@@ -268,7 +302,7 @@ for i in range(5):
 #장애물 추가하기
 
 
-
+# 성공률 기입 하다말음
 
 
 
