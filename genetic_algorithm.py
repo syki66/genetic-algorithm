@@ -10,8 +10,8 @@ import time
 wn = turtle.Screen()
 wn.bgcolor("yellow")
 wn.title("Gen turtle")
-wn.setup(550,500)
-wn.delay(0.0001) # 가속
+wn.setup(900,900)
+wn.delay(0.05) # 가속
 
 #경계선
 border_pen = turtle.Turtle()
@@ -26,6 +26,29 @@ border_pen.hideturtle()
 for side in range(4):
     border_pen.fd(400)
     border_pen.lt(90)
+
+
+#유전인자 경계선(-344 + (i*12), 178)
+gen_border_pen = turtle.Turtle()
+gen_border_pen.speed(0)
+gen_border_pen.hideturtle()
+gen_border_pen.color("black")
+gen_border_pen.pensize(1)
+
+
+for i in range(11):
+    gen_border_pen.setheading(270)
+    gen_border_pen.penup()
+    gen_border_pen.setposition(-344 + (i*12), 178)
+    gen_border_pen.pendown()
+    gen_border_pen.fd(390)
+    
+for i in range(2):
+    gen_border_pen.setheading(0)
+    gen_border_pen.penup()
+    gen_border_pen.setposition(-344,178-(390*i))
+    gen_border_pen.pendown()
+    gen_border_pen.fd(121)
 
 
 #거북이
@@ -155,6 +178,11 @@ text_suc.setposition(-100,205)
 text_suc.hideturtle()
 text_suc.write("성공률 = ", False, font=("Arial", 20, "normal"))
 
+#
+text_suc.setposition(-342,-230)
+text_suc.hideturtle()
+text_suc.write("(up, down, left, right)", False, font=("Arial", 10, "normal"))
+
 
 text_try = turtle.Turtle()
 text_try.penup()
@@ -214,10 +242,21 @@ def execute_measure_distance_of_DNA(cnt_lists):
 
 
 
+gen_info = turtle.Turtle()
+gen_info.hideturtle()
+gen_info.penup()
+
+gen_txt = turtle.Turtle()
+gen_txt.hideturtle()
+gen_txt.penup()
+
+
+
 
 # 목적지와 가장 가까운값 10개 추출 (상위 10퍼)
-
+generation_cnt = 0
 def select_DNA(cnt_lists2, gen_distance2):
+    global generation_cnt
     selected_gen_list = []
 
     #가장 거리 가까운 인덱스값 리스트 10개
@@ -227,10 +266,30 @@ def select_DNA(cnt_lists2, gen_distance2):
         gen_distance2[gen_distance2.index(min(gen_distance2))] = 10000
 
 
-    for i in range(10):
-        print(selected_gen_list[i])
+    #유전자 정보 화면에 출력
+    gen_info.clear()
+    gen_txt.clear()
+    generation_cnt += 1
+    gen_txt.setposition(-350, 230)
+    gen_txt.write(str((generation_cnt))+"세대",font=("Arial", 14, "normal"))
+    gen_txt.setposition(-350, 210)
+    gen_txt.write("상위 10% 유전자",font=("Arial", 14, "normal"))
+    for i in range(len(selected_gen_list)):
+        gen_info.setposition(-340 + (i*12), 180)
+        gen_info.write(str(i+1),font=("Arial", 10, "normal"))
+        
+        for j in range(len(selected_gen_list[1])):
+            if (selected_gen_list[i][j] == 1):
+                gen_info_text = "L"
+            elif (selected_gen_list[i][j] == 2):
+                gen_info_text = "U"
+            elif (selected_gen_list[i][j] == 3):
+                gen_info_text = "R"
+            else:
+                gen_info_text = "D"
+            gen_info.setposition(-340 + (i*12), 165 - (j*9))
+            gen_info.write(gen_info_text,font=("Arial", 8, "normal"))
 
-    print("----------------------------------------")
 
     return selected_gen_list
 
@@ -275,6 +334,8 @@ text_gen2.hideturtle()
 
 for i in range(20):
     generation += 1
+
+    #가속
     '''
     if generation == 15 :
         wn.delay(50)
@@ -285,6 +346,7 @@ for i in range(20):
     text_gen2.penup()
     text_gen2.setposition(60, -240)
     text_gen2.write(str(generation),font=("Arial", 20, "normal"))
+
     
     TEST2 = execute_measure_distance_of_DNA(TEST1)
     
@@ -292,9 +354,9 @@ for i in range(20):
     
     TEST4 = generate_next_gen(TEST3)
 
-    TEST1 = mutate_DNA(TEST4, 10)
+    TEST1 = mutate_DNA(TEST4, 15)
 
-    
+    time.sleep(1)
 
 
 #### 돌연변이 추가해야되고 각세대 성공률 기입, 최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
@@ -302,7 +364,8 @@ for i in range(20):
 #장애물 추가하기
 
 
-#1.3.1은 타이트하게 43개 유전인자로 가능한지 확인할라고ㅇㅇ 그냥 손쉽게가능함
+
+
 
 
 
