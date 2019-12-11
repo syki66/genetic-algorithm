@@ -4,14 +4,18 @@ from random import randint
 import math
 import time
 
-#창크기
 
+start_time = time.time()
+
+
+#창크기
 #배경
 wn = turtle.Screen()
 wn.bgcolor("yellow")
 wn.title("Gen turtle")
-wn.setup(900,900)
-wn.delay(0.05) # 가속
+wn.setup(1280, 720)
+#wn.delay(0.05) # 가속
+wn.delay(5)
 
 #경계선
 border_pen = turtle.Turtle()
@@ -197,6 +201,17 @@ text_try_count.setposition(230,-10)
 text_try_count.hideturtle()
 
 
+text_accel = turtle.Turtle()
+text_accel.hideturtle()
+text_accel.penup()
+text_accel.setposition(210,-200)
+
+gen_txt2 = turtle.Turtle()
+gen_txt2.hideturtle()
+gen_txt2.penup()
+gen_txt2.setposition(-350, 210)
+gen_txt2.write("상위 10% 유전자",font=("Arial", 14, "normal"))
+
 
 
 
@@ -231,6 +246,15 @@ def execute_measure_distance_of_DNA(cnt_lists):
         text_try_count.clear()
         try_cnt += 1
         text_try_count.write(str(try_cnt), False, font=("Arial", 20, "normal"))
+
+        if (try_cnt < 5):
+            text_accel.clear()
+            wn.delay(50)
+            
+        else :
+            wn.delay(0.2)
+            text_accel.write("X250", False, font=("Arial", 20, "bold"))
+            
         for j in range(len(cnt_lists[0])):
             gen_execute(cnt_lists[i], j)
 
@@ -272,8 +296,7 @@ def select_DNA(cnt_lists2, gen_distance2):
     generation_cnt += 1
     gen_txt.setposition(-350, 230)
     gen_txt.write(str((generation_cnt))+"세대",font=("Arial", 14, "normal"))
-    gen_txt.setposition(-350, 210)
-    gen_txt.write("상위 10% 유전자",font=("Arial", 14, "normal"))
+
     for i in range(len(selected_gen_list)):
         gen_info.setposition(-340 + (i*12), 180)
         gen_info.write(str(i+1),font=("Arial", 10, "normal"))
@@ -315,7 +338,7 @@ def generate_next_gen(selected_gen_list2):
 
 
 
-#돌연변이 위치 상관없이 1퍼센트(450개 중에 10개) 인자 랜덤으로 대입
+#돌연변이 위치 상관없이 2% (4300개 중에 90개) 인자 랜덤으로 대입
 def mutate_DNA(second_100_gen_list2, mutation_ratio):
     for i in range(mutation_ratio):
         second_100_gen_list2[randint(0,99)][randint(0,42)] = randint(1,4)
@@ -332,15 +355,11 @@ generation = 0
 text_gen2 = turtle.Turtle()
 text_gen2.hideturtle()
 
-for i in range(20):
+for i in range(10):
     generation += 1
 
-    #가속
-    '''
-    if generation == 15 :
-        wn.delay(50)
-    '''
     generation_sucess_cnt = 0
+    text_succ.write("0",font=("Arial", 30, "normal"))
 
     text_gen2.clear()
     text_gen2.penup()
@@ -354,21 +373,81 @@ for i in range(20):
     
     TEST4 = generate_next_gen(TEST3)
 
-    TEST1 = mutate_DNA(TEST4, 15)
+    TEST1 = mutate_DNA(TEST4, 90)
 
     time.sleep(1)
 
+    text_succ.clear()
 
-#### 돌연변이 추가해야되고 각세대 성공률 기입, 최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
+
+
+############################################
+f1.color("black")
+
+wn.bgcolor("black")
+wn.delay(3)
+
+p1.color("white")
+p1.speed(1)
+p1.pensize(40)
+
+
+def ggut(x,y,z,w):
+
+    p1.penup()
+    p1.setheading(p1.towards(x,y)) # 선이 그어지는쪽으로 대가리돌리기
+    p1.setposition(x,y)
+    p1.setheading(p1.towards(z,w))
+    p1.pendown()
+    p1.setposition(z,w)
+
+
+def real_ggut(x,y,z,w):
+
+    p1.penup()
+    p1.setheading(p1.towards(x,y)) # 선이 그어지는쪽으로 대가리돌리기
+    p1.setposition(x,y)
+    p1.pendown()
+
+    wn.delay(1)
+    for i in range(1,200):
+        k = i * 0.05
+        p1.shapesize(10-k, 10-k)
+        p1.setposition(z+i,w)
+        
+
+
+
+#거북이 커지게
+time.sleep(1)
+for i in range(300,1000):
+    i *= 0.01
+    p1.shapesize(i, i)
+    
+
+#끝
+ggut(-170,170, -20, 170)
+ggut(-20, 170, -20, 50)
+ggut(20, 170, 170, 170)
+ggut(170,170,170,50)
+ggut(-170,0,170,0)
+ggut(-170,-60, 170,-60)
+ggut(-170,-60, -170,-170)
+ggut(-170,-170, 170,-170)
+ggut(-170,-115,170,-115)
+
+real_ggut(171,-115,172,-115)
+
+end_time = time.time()
+
+
+print(end_time - start_time)
+
+#최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
 
 #장애물 추가하기
 
-
-
-
-
-
-
+#거북이 좀더 빨리가고 빨리 축소되게하기  
 
 
 
