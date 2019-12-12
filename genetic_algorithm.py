@@ -5,21 +5,31 @@ import math
 import time
 
 
-start_time = time.time()
+#배경
+wn = turtle.Screen()
+wn.setup(1290, 730)
+
+
+#녹화할 시간좀 확보
+wn.delay(100)
+
+start = turtle.Turtle()
+start.speed(1)
+start.penup()
+start.hideturtle()
+start.setposition(300,300)
 
 
 #창크기
-#배경
-wn = turtle.Screen()
 wn.bgcolor("yellow")
 wn.title("Gen turtle")
-wn.setup(1280, 720)
+
 #wn.delay(0.05) # 가속
 wn.delay(5)
 
 #경계선
 border_pen = turtle.Turtle()
-border_pen.speed(0)
+border_pen.speed(5)
 border_pen.color("white")
 border_pen.penup()
 border_pen.setposition(-200,-200)
@@ -355,7 +365,9 @@ generation = 0
 text_gen2 = turtle.Turtle()
 text_gen2.hideturtle()
 
-for i in range(10):
+mutant_rate = 150
+for i in range(16):
+    
     generation += 1
 
     generation_sucess_cnt = 0
@@ -373,7 +385,9 @@ for i in range(10):
     
     TEST4 = generate_next_gen(TEST3)
 
-    TEST1 = mutate_DNA(TEST4, 90)
+    TEST1 = mutate_DNA(TEST4, mutant_rate)
+
+    mutant_rate -= 10
 
     time.sleep(1)
 
@@ -438,10 +452,7 @@ ggut(-170,-115,170,-115)
 
 real_ggut(171,-115,172,-115)
 
-end_time = time.time()
 
-
-print(end_time - start_time)
 
 #최종 거리값 이외에 중간에 거리값도 계산해서 반영하면 먹이 위치 바뀌어도 가능할듯
 
