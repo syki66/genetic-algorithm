@@ -1,41 +1,53 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
-const xInitPos = 40;
+const xInitPos = 40; // 초기 위치
 const yInitPos = 40;
 
-var xPos = 40;
-var yPos = 40;
+const dnaLength = 50; //유전자 길이
+const dnaCount = 10; //유전자 개수
 
-const lengthOfDna = 500; //유전자 길이
-const countOfDna = 100; //유전자 개수
-
-var allDnaArray = new Array(countOfDna);
+let xPos = 40;
+let yPos = 40;
 
 
-function dnaArray() {
+let dnaArrayAll = new Array(dnaCount);
+let rectArray = new Array(dnaCount);
+
+function makeDnaArray() {
     // 2차원 배열 초기화
-    for (var i = 0; i < countOfDna; i++){
-        allDnaArray[i] = new Array(lengthOfDna);
+    
+    for (let i = 0; i < dnaCount; i++){
+        dnaArrayAll[i] = new Array(dnaLength);
     }
 
     // DNA에 랜덤값 대입
-    for (var i = 0; i < countOfDna; i++) {
-        for (var j = 0; j < lengthOfDna; j++) {
-            allDnaArray[i][j] = Math.floor(Math.random() * 4);
+    for (let i = 0; i < dnaCount; i++) {
+        for (let j = 0; j < dnaLength; j++) {
+            dnaArrayAll[i][j] = Math.floor(Math.random() * 4);
         }
     }
 }
 
-dnaArray();
+function makeRectangleFactory() {
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+
+    for (let i = 0; i < dnaCount; i++) {
+        rectArray[i] = new Path2D();
+        rectArray[i].rect(xPos, yPos, 10, 10);
+        ctx.fill(rectArray[i]);
+    }
+
+}
 
 
-function decideDirection (inputDnaArray, i, j) {
-    if (inputDnaArray[i][j] === 0) {
+
+function decideDirection (inputDnaArray) {
+    if (inputDnaArray === 0) {
         xPos--;
-    } else if (inputDnaArray[i][j] === 1) {
+    } else if (inputDnaArray === 1) {
         xPos++;
-    } else if (inputDnaArray[i][j] === 2) {
+    } else if (inputDnaArray === 2) {
         yPos--;
     } else {
         yPos++;
@@ -43,31 +55,87 @@ function decideDirection (inputDnaArray, i, j) {
 }
 
 
-var allDnaArray_i = 0;
-var allDnaArray_j = 0;
-
 function moveRect() {
+    makeDnaArray();
+    for (let i = 0; i < dnaCount; i++) {
+        for (let j = 0; j < dnaLength; j++) {
+            decideDirection(dnaArrayAll[i][j]);
+            console.log(dnaArrayAll[i][j]);
+
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            rectArray[i].rect(xPos, yPos, 10, 10);
+            ctx.fill(rectArray[i]);
+        }
+    }
+}
+
+
+
+let dnaArrayAll_i = 0;
+let dnaArrayAll_j = 0;
+
+function moveRect2() {
     ctx.clearRect(0,0, canvas.width, canvas.height); // 사각형 자취 제거
 
-    decideDirection(allDnaArray, allDnaArray_i, allDnaArray_j);
-
+    decideDirection(dnaArrayAll, dnaArrayAll_i, dnaArrayAll_j);
+/*
     ctx.beginPath();
     ctx.rect(xPos, yPos, 10,10);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
+*/
 
-    // for문처럼 쓸라고
-    if (allDnaArray_j > lengthOfDna-2) {
-        allDnaArray_i++;
-        allDnaArray_j = 0;
+
+    /* // 얘는 스킵용으로 쓰기
+    for (let i = 0; i < dnaCount; i++){
+        for (let j = 0; j < dnaLength; j++) {
+            decideDirection(dnaArrayAll, i, j);
+            //console.log(dnaArrayAll, i, j);
+        }
+
+    }
+    */
+
+    
+    // setinterval 써야되서.. (for문용)
+    if (dnaArrayAll_j > dnaLength-2) {
+        dnaArrayAll_i++;
+        dnaArrayAll_j = 0;
 
         xPos = xInitPos; //위치 초기화
         yPos = yInitPos;
     } else {
-        allDnaArray_j++;
+        dnaArrayAll_j++;
     }
-    //console.log(allDnaArray_i, allDnaArray_j);
+    //console.log(dnaArrayAll_i, dnaArrayAll_j);
+}
+
+
+for (let i = 0; i < dnaCount; i++) {
+    rectArray[i] = new Path2D();
+
+}
+jj = 0;
+function test () {
+    
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+        
+        rectArray[i].rect(i*20, jj, 10, 10);
+        ctx.fill(rectArray[i]);
+    }
+    jj++;
+    }
+
+function init () {
+    
+    
+    //setInterval(moveRect,5);
+    //setInterval(RectangleFactory,500);
+    //moveRect();
+    setInterval(test, 500);
+
 }
 
 
@@ -75,8 +143,4 @@ function moveRect() {
 
 
 
-
-
-
-
-setInterval(moveRect,0.0000001);
+init();
