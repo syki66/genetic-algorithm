@@ -9,4 +9,4 @@ python, turtle 라이브러리를 이용하여 구현
 
 # 시연 영상
 
-[![demo-thumbnail](https://github.com/syki66/genetic-algorithm/assets/59393359/2b84dcbb-6a93-4530-a2bc-0b6293aa8d5f)](https://syki66.github.io/genetic-algorithm/demo.mov)
+[![demo-thumbnail](https://github.com/syki66/genetic-algorithm/assets/59393359/2b84dcbb-6a93-4530-a2bc-0b6293aa8d5f)](https://syki66.github.io/genetic-algorithm/)
